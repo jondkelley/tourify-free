@@ -1,0 +1,29 @@
+version: "3.9"
+
+services:
+  mongo:
+    image: mongo:7.0
+    container_name: tourify-mongo
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_DATABASE: tourify
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+  app:
+    build:
+      context: .
+      target: production
+    container_name: tourify-app
+    restart: unless-stopped
+    depends_on:
+      - mongo
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./config.env:/app/config.env:ro
+
+volumes:
+  mongo-data:

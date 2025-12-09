@@ -35,6 +35,40 @@ Screenshots (from `showcaseImages/`):
 
 ---
 
+##  Docker Setup
+
+> Requirements: Docker Engine 20.10+ and Docker Compose v2 (the modern `docker compose` CLI).
+
+1. **Create your runtime config**
+   ```bash
+   cp config.docker.env config.env
+   # edit config.env to plug in your real secrets/API keys
+   ```
+   The Compose stack mounts `config.env` directly into the app container so `dotenv` can read it during boot; [`config.docker.env`](config.docker.env) is simply the template.
+
+2. **Build and start the stack**
+   ```bash
+   docker compose up --build
+   ```
+   * `tourify-app` → builds the Node.js image defined in [`Dockerfile`](Dockerfile)
+   * `tourify-mongo` → runs MongoDB 7 with its data persisted in the `mongo-data` Docker volume
+
+3. **Useful commands**
+   ```bash
+   # follow application logs
+   docker compose logs -f app
+
+   # run any project script inside the container (e.g. seed data)
+   docker compose exec app node dev-data/data/import-dev-data.js --import
+
+   # stop and remove containers/volume (data persists in the named volume)
+   docker compose down
+   ```
+
+`docker compose up -d` runs everything in the background once the images have been built.
+
+---
+
 ##  Quick Start
 
 1. **Clone the repo & install dependencies:**
